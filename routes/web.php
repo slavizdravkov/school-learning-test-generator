@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -18,3 +20,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::prefix('/subject')->group(function () {
+    Route::name('subject.')->group(function () {
+        Route::get('/list', 'SubjectController@index')->name('list');
+        Route::match(array('GET', 'POST'), '/edit/{subject?}', 'SubjectController@edit')->name('edit');
+
+        Route::prefix('/{subjectId}')->group(function () {
+            Route::name('lesson.')->group(function () {
+                Route::get('/list', 'LessonController@index')->name('list');
+                Route::match(array('GET', 'POST'), '/edit/{lesson?}', 'LessonController@edit')->name('edit');
+            });
+        });
+    });
+});
