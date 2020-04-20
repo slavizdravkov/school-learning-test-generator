@@ -127,6 +127,36 @@ class UsersController extends Controller
         return back()->with('success', 'Старуса е променен успешно');
     }
 
+    public function editProfile(Request $request)
+    {
+        return view('users.edit-profile', ['user' => Auth::user()]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $validations = [
+            'name' => 'required|string|max:255'
+        ];
+
+        if (Auth::user()->email !== $request->get('email')) {
+            $validations['email'] = 'required|string|email|unique:users';
+        }
+
+        if (null !== $request->get('password')) {
+            $validations['password'] = 'string|min:8|confirmed';
+        }
+
+        $data = $request->validate($validations);
+
+        $user = Auth::user();
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
+        $user->update($data);
+
+        return back()->with('success', 'Профилът беше редактиран успешно.');
+    }
+
     protected function validateParams(Request $request, Collection $roles = null, $isVerifiedUser = false)
     {
         $validations = [];
@@ -139,8 +169,8 @@ class UsersController extends Controller
         }
 
         if (!$isVerifiedUser) {
-            $validations['name'] = 'required|max:255';
-            $validations['email'] = 'required|email';
+            $validations['name'] = 'required|string|max:255';
+            $validations['email'] = 'required|string|email|unique:users';
         }
 
         return $request->validate($validations);
