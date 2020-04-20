@@ -6,15 +6,14 @@ use App\Subject;
 use App\User;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class SubjectController extends Controller
 {
     public function index()
     {
-        $subjects = Subject::orderBy('name', 'asc')->get();
-
-        return view('subject.list', array('subjects' => $subjects));
+        return view('subject.list', ['subjects' => Subject::orderBy('name', 'asc')->get()]);
     }
 
     public function edit(Request $request, Subject $subject)

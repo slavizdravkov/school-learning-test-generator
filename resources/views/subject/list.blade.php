@@ -24,7 +24,7 @@
                                     <td>{{ $subject->name }}</td>
                                     <td class="text-center">
                                         <a href="{{ route('subject.edit', array('subject' => $subject)) }}">Редакция</a>
-                                        | <a href="{{ route('subject.lesson.list', array('id' => $subject->id)) }}">Уроци</a>
+                                        | <a href="{{ route('subject.lesson.list', array('subjectName' => $subject->id)) }}">Уроци</a>
                                     </td>
                                 </tr>
                             @endforeach

@@ -22,7 +22,7 @@
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
@@ -33,7 +33,37 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        @auth
+                            @if(Auth::user()->hasPermission([
+                                    \App\Library\Helpers\Constants\CapabilitiesNames::CAPABILITY_NAME_VIEW_CAPABILITIES,
+                                    \App\Library\Helpers\Constants\CapabilitiesNames::CAPABILITY_NAME_VIEW_ROLES,
+                                    \App\Library\Helpers\Constants\CapabilitiesNames::CAPABILITY_NAME_VIEW_USERS,
+                                ]))
+                                <li class="nav-item dropdown">
+                                    <a
+                                        class="nav-link dropdown-toggle"
+                                        href="#" id="navbarDropdown"
+                                        role="button"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                    >
+                                        Admin
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        @can(\App\Library\Helpers\Constants\CapabilitiesNames::CAPABILITY_NAME_VIEW_CAPABILITIES)
+                                            <a class="dropdown-item" href="{{ route('capabilities.index') }}">Capabilities</a>
+                                        @endcan
+                                        @can(\App\Library\Helpers\Constants\CapabilitiesNames::CAPABILITY_NAME_VIEW_ROLES)
+                                            <a class="dropdown-item" href="{{ route('roles.index') }}">Roles</a>
+                                        @endcan
+                                        @can(\App\Library\Helpers\Constants\CapabilitiesNames::CAPABILITY_NAME_VIEW_USERS)
+                                            <a class="dropdown-item" href="{{ route('users.index') }}">Users</a>
+                                        @endcan
+                                    </div>
+                                </li>
+                            @endif
+                        @endauth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -43,11 +73,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
